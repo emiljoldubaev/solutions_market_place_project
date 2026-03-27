@@ -147,7 +147,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
+              Container(
+                height: 48,
+                width: 48,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryDark.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.explore_outlined, color: AppTheme.primaryDark),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/city-explorer');
+                  },
+                  tooltip: 'Explore Cities',
+                ),
+              ),
+              const SizedBox(width: 8),
               Container(
                 height: 48,
                 width: 48,

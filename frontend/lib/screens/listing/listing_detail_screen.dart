@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../providers/conversation_provider.dart';
 import '../../providers/favorite_provider.dart';
 import '../../config/theme.dart';
@@ -45,6 +46,22 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _openInMaps(String city) async {
+    // Try 2GIS first, fallback to Google Maps
+    final twoGisUri = Uri.parse('dgis://2gis.ru/search/$city');
+    final googleMapsUri = Uri.parse('https://www.google.com/maps/search/$city,+Kyrgyzstan');
+
+    try {
+      if (await canLaunchUrl(twoGisUri)) {
+        await launchUrl(twoGisUri, mode: LaunchMode.externalApplication);
+      } else {
+        await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {
+      await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+    }
   }
 
   @override
@@ -271,6 +288,63 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                   // Dynamic Attributes
                   DynamicAttributes(attributes: _listing!['attributes'] as Map<String, dynamic>?),
                   
+                  // ── Location Section ──
+                  Text('Location', style: Theme.of(context).textTheme.headlineSmall),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppTheme.background,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppTheme.border),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 48, height: 48,
+                          decoration: BoxDecoration(
+                            color: AppTheme.primary.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.pin_drop_rounded, color: AppTheme.primary, size: 22),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                city,
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Kyrgyzstan',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: AppTheme.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: () => _openInMaps(city),
+                          icon: const Icon(Icons.map_outlined, size: 16),
+                          label: const Text('2GIS'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppTheme.textPrimary,
+                            side: const BorderSide(color: AppTheme.border),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
                   // Owner Card
                   Text('Seller Information', style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 16),

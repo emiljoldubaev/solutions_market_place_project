@@ -21,6 +21,7 @@ import 'screens/profile/owner_public_profile_screen.dart';
 import 'screens/listing/promote_listing_screen.dart';
 import 'screens/payment/mock_checkout_screen.dart';
 import 'screens/search/search_screen.dart';
+import 'screens/explore/city_explorer_screen.dart';
 import 'providers/favorite_provider.dart';
 import 'providers/notification_provider.dart';
 import 'providers/profile_provider.dart';
@@ -95,6 +96,7 @@ class MarketplaceApp extends StatelessWidget {
         '/promote': (context) => const PromoteListingScreen(),
         '/checkout': (context) => const MockCheckoutScreen(),
         '/search': (context) => const SearchScreen(),
+        '/city-explorer': (context) => const CityExplorerScreen(),
       },
     );
   }
