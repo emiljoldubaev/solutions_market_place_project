@@ -1,0 +1,92 @@
+{% extends "admin/base.html" %}
+{% set active_page = "dashboard" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom border-secondary-subtle">
+    <h1 class="h2 fw-bold text-dark">Admin Dashboard</h1>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Users Card -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card shadow-sm h-100 border-0 border-start border-primary border-4">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase">Total Users</h6>
+                <h2 class="card-title mb-0 display-6 fw-bold">{{ stats.total_users }}</h2>
+                <div class="mt-2 small text-muted fw-medium">
+                    <span class="text-success"><i class="bi bi-person-check-fill"></i> {{ stats.active_users }} active</span> &middot; 
+                    <span class="text-danger"><i class="bi bi-person-x-fill"></i> {{ stats.blocked_users }} blocked</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Listings Card -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card shadow-sm h-100 border-0 border-start border-success border-4">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase">Total Listings</h6>
+                <h2 class="card-title mb-0 display-6 fw-bold">{{ stats.total_listings }}</h2>
+                <div class="mt-2 small text-muted fw-medium">
+                    <span class="text-success">{{ stats.approved_listings }} approved</span> &middot; 
+                    <span class="text-warning text-darken">{{ stats.pending_listings }} pending</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conversations Card -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card shadow-sm h-100 border-0 border-start border-info border-4">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase">Messaging Activity</h6>
+                <h2 class="card-title mb-0 display-6 fw-bold">{{ stats.total_conversations }}</h2>
+                <div class="mt-2 small text-muted fw-medium">
+                    Total conversations &middot; {{ stats.total_messages }} messages
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports Card -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card shadow-sm h-100 border-0 border-start border-danger border-4">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase">Pending Reports</h6>
+                <h2 class="card-title mb-0 display-6 fw-bold text-danger">{{ stats.pending_reports }}</h2>
+                <div class="mt-2 small text-danger fw-medium">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Requires immediate action
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financials Card -->
+    <div class="col-md-6 col-lg-4 mt-4">
+        <div class="card shadow-sm h-100 border-0 border-start border-warning border-4 bg-light">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase">Total Revenue</h6>
+                <h2 class="card-title mb-0 display-5 fw-bold">${{ "%.2f"|format(stats.total_revenue) }}</h2>
+                <div class="mt-2 small text-muted fw-medium">
+                    <i class="bi bi-wallet-fill"></i> From {{ stats.total_payments }} successful payments
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promotions Card -->
+    <div class="col-md-6 col-lg-4 mt-4">
+        <div class="card shadow-sm h-100 border-0 border-start border-secondary border-4">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted fw-bold text-uppercase">Active Promotions</h6>
+                <h2 class="card-title mb-0 display-5 fw-bold">{{ stats.active_promotions }}</h2>
+                <div class="mt-2 small text-muted fw-medium">
+                    <i class="bi bi-stars text-warning"></i> Listings currently featured
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

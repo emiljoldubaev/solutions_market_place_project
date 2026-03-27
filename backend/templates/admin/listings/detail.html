@@ -1,0 +1,139 @@
+{% extends "admin/base.html" %}
+{% set active_page = "listings" %}
+
+{% block title %}Listing Detail{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 pt-3 pb-2 border-bottom border-secondary-subtle">
+    <div class="d-flex align-items-center gap-3">
+        <a href="/admin/listings" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+        <h1 class="h2 fw-bold text-dark mb-0">Listing #{{ listing.id }}</h1>
+    </div>
+    <div class="d-flex gap-2">
+        {% if listing.status == 'pending_review' %}
+        <form action="/admin/listings/{{ listing.id }}/approve" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-success fw-medium"><i class="bi bi-check-circle me-1"></i> Approve</button>
+        </form>
+        <button class="btn btn-danger fw-medium" data-bs-toggle="modal" data-bs-target="#rejectModal">
+            <i class="bi bi-x-circle me-1"></i> Reject
+        </button>
+        {% endif %}
+        
+        <form action="/admin/listings/{{ listing.id }}/archive" method="POST" class="d-inline" onsubmit="return confirm('Archive this listing?');">
+            <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-archive me-1"></i> Archive</button>
+        </form>
+        
+        <form action="/admin/listings/{{ listing.id }}/feature" method="POST" class="d-inline">
+            <button type="submit" class="btn {% if listing.is_featured %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                <i class="bi bi-star-fill me-1"></i> Toggle Feature
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h3 class="fw-bold mb-0 text-dark">{{ listing.title }}</h3>
+                    <h3 class="fw-bold text-success mb-0">${{ listing.price }}</h3>
+                </div>
+                
+                <div class="mb-4">
+                    {% if listing.status == 'approved' %}
+                    <span class="badge bg-success bg-opacity-25 text-success border border-success fw-medium fs-6 me-2">Approved</span>
+                    {% elif listing.status == 'pending_review' %}
+                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning fw-medium fs-6 me-2">Pending Review</span>
+                    {% elif listing.status == 'rejected' %}
+                    <span class="badge bg-danger bg-opacity-25 text-danger border border-danger fw-medium fs-6 me-2">Rejected</span>
+                    {% else %}
+                    <span class="badge bg-secondary fs-6 me-2">{{ listing.status|title }}</span>
+                    {% endif %}
+                    
+                    <span class="badge bg-light text-dark border fs-6 me-2"><i class="bi bi-geo-alt me-1"></i>{{ listing.city }}</span>
+                    <span class="badge bg-light text-dark border fs-6"><i class="bi bi-tags me-1"></i>{{ listing.category.name if listing.category else 'Unknown Category' }}</span>
+                </div>
+
+                <h6 class="fw-bold text-muted text-uppercase mb-2">Description</h6>
+                <div class="p-3 bg-light rounded text-dark fs-5 shadow-sm" style="white-space: pre-line;">{{ listing.description }}</div>
+            </div>
+            <ul class="list-group list-group-flush border-top">
+                <li class="list-group-item p-4">
+                    <h6 class="fw-bold text-muted text-uppercase mb-3">Images</h6>
+                    <div class="d-flex gap-2 overflow-auto pb-2">
+                        {% for img in listing.images %}
+                        <div class="position-relative" style="min-width: 150px; height: 150px;">
+                            <img src="{{ img.image_url }}" class="rounded shadow-sm" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% if img.is_primary %}
+                            <span class="badge bg-primary position-absolute top-0 start-0 m-2">Primary</span>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="text-muted fst-italic">No images uploaded.</div>
+                        {% endfor %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-white">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <h5 class="fw-bold mb-0 text-muted text-uppercase">Listing Facts</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+                    <li class="d-flex justify-content-between">
+                        <span class="text-muted">Owner ID</span>
+                        <a href="/admin/users/{{ listing.owner_id }}" class="fw-bold text-decoration-none">#{{ listing.owner_id }}</a>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                        <span class="text-muted">Created By</span>
+                        <span class="fw-bold text-dark">{{ listing.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                        <span class="text-muted">Published</span>
+                        <span class="fw-bold text-dark">{{ listing.published_at.strftime('%Y-%m-%d %H:%M') if listing.published_at else 'N/A' }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                        <span class="text-muted">Views</span>
+                        <span class="fw-bold text-dark">{{ listing.view_count }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                        <span class="text-muted">Favorites</span>
+                        <span class="fw-bold text-dark">{{ listing.favorites|length }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content border-0 shadow">
+      <form action="/admin/listings/{{ listing.id }}/reject" method="POST">
+      <div class="modal-header bg-danger text-white border-0">
+        <h5 class="modal-title"><i class="bi bi-x-circle-fill me-2"></i>Reject Listing</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body py-4">
+        <p>You are rejecting <strong>{{ listing.title }}</strong>.</p>
+        <div class="mb-3">
+            <label class="form-label fw-medium text-dark">Reason for Rejection <span class="text-danger">*</span></label>
+            <textarea class="form-control bg-light" name="note" rows="3" required placeholder="This will be sent to the user..."></textarea>
+            <div class="form-text">The owner will receive an automated notification with this exact note.</div>
+        </div>
+      </div>
+      <div class="modal-footer bg-light border-0">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger">Confirm Rejection</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

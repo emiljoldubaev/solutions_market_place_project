@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 import logging
@@ -10,7 +11,7 @@ from database import engine, Base
 
 # Import all models so they register with Base
 import models  # noqa: F401
-from routers import auth, users, listings, listing_images, favorites, conversations, notifications, reports, promotions, payments
+from routers import auth, users, listings, listing_images, favorites, conversations, notifications, reports, promotions, payments, admin
 
 
 # Configure logging
@@ -33,6 +34,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.JWT_SECRET_KEY,
+    max_age=8 * 3600
+)
+
 # Serve uploaded files
 uploads_dir = os.path.join(os.path.dirname(__file__), settings.UPLOAD_DIR)
 if os.path.exists(uploads_dir):
@@ -49,6 +56,7 @@ app.include_router(notifications.router)
 app.include_router(reports.router)
 app.include_router(promotions.router)
 app.include_router(payments.router)
+app.include_router(admin.router)
 
 
 @app.on_event("startup")

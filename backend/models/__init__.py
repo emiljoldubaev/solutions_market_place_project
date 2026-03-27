@@ -10,8 +10,9 @@ from models.message_attachment import MessageAttachment
 from models.notification import Notification
 from models.report import Report
 from models.promotion_package import PromotionPackage
-from models.promotion import Promotion
+from models.report import Report
 from models.payment import Payment
+from models.audit_log import AuditLog
 from models.audit_log import AuditLog
 
 __all__ = [

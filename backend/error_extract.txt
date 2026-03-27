@@ -1,0 +1,753 @@
+Traceback (most recent call
+ last):
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2531, in get_property
+    return self._props[key]
+           ~~~~~~~~~~~^^^^^
+KeyError: 'admin_user'
+
+The above exception was the
+ direct cause of the follow
+ing exception:
+
+Traceback (most recent call
+ last):
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\errors.
+py", line 164, in __call__
+    await self.app(scope, r
+eceive, _send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\session
+s.py", line 85, in __call__
+    await self.app(scope, r
+eceive, send_wrapper)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\cors.py
+", line 85, in __call__
+    await self.app(scope, r
+eceive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\excepti
+ons.py", line 63, in __call
+__
+    await wrap_app_handling
+_exceptions(self.app, conn)
+(scope, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\_exception_handler
+.py", line 53, in wrapped_a
+pp
+    raise exc
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\_exception_handler
+.py", line 42, in wrapped_a
+pp
+    await app(scope, receiv
+e, sender)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\middleware\asyncexit
+stack.py", line 18, in __ca
+ll__
+    await self.app(scope, r
+eceive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\routing.py", line 
+716, in __call__
+    await self.middleware_s
+tack(scope, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\routing.py", line 
+736, in app
+    await route.handle(scop
+e, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\routing.py", line 
+290, in handle
+    await self.app(scope, r
+eceive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\routing.py", line 11
+5, in app
+    await wrap_app_handling
+_exceptions(app, request)(s
+cope, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\_exception_handler
+.py", line 53, in wrapped_a
+pp
+    raise exc
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\_exception_handler
+.py", line 42, in wrapped_a
+pp
+    await app(scope, receiv
+e, sender)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\routing.py", line 10
+1, in app
+    response = await f(requ
+est)
+               ^^^^^^^^^^^^
+^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\routing.py", line 35
+5, in app
+    raw_response = await ru
+n_endpoint_function(
+                   ^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\routing.py", line 24
+5, in run_endpoint_function
+    return await run_in_thr
+eadpool(dependant.call, **v
+alues)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\concurrency.py", l
+ine 32, in run_in_threadpoo
+l
+    return await anyio.to_t
+hread.run_sync(func)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\a
+nyio\to_thread.py", line 61
+, in run_sync
+    return await get_async_
+backend().run_sync_in_worke
+r_thread(
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^
+        func, args, abandon
+_on_cancel=abandon_on_cance
+l, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\a
+nyio\_backends\_asyncio.py"
+, line 2525, in run_sync_in
+_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\a
+nyio\_backends\_asyncio.py"
+, line 986, in run
+    result = context.run(fu
+nc, *args)
+  File "C:\Users\User\Docum
+ents\solutions_marketplace_
+project\solutions_market_pl
+ace_project\backend\routers
+\admin.py", line 63, in log
+in_post
+    user = db.query(User).f
+ilter(User.email == email).
+first()
+           ~~~~~~~~^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\session.py", 
+line 2941, in query
+    return self._query_cls(
+entities, self, **kwargs)
+           ~~~~~~~~~~~~~~~^
+^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\query.py", li
+ne 276, in __init__
+    self._set_entities(enti
+ties)
+    ~~~~~~~~~~~~~~~~~~^^^^^
+^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\query.py", li
+ne 289, in _set_entities
+    coercions.expect(
+    ~~~~~~~~~~~~~~~~^
+        roles.ColumnsClause
+Role,
+        ^^^^^^^^^^^^^^^^^^^
+^^^^^
+    ...<2 lines>...
+        post_inspect=True,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\sql\coercions.py"
+, line 389, in expect
+    insp._post_inspect
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\util\langhelpers.
+py", line 1338, in __get__
+    obj.__dict__[self.__nam
+e__] = result = self.fget(o
+bj)
+                           
+                ~~~~~~~~~^^
+^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2733, in _post_inspect
+    self._check_configure()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2410, in _check_configu
+re
+    _configure_registries({
+self.registry}, cascade=Tru
+e)
+    ~~~~~~~~~~~~~~~~~~~~~^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 4227, in _configure_reg
+istries
+    _do_configure_registrie
+s(registries, cascade)
+    ~~~~~~~~~~~~~~~~~~~~~~~
+~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 4268, in _do_configure_
+registries
+    mapper._post_configure_
+properties()
+    ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2427, in _post_configur
+e_properties
+    prop.init()
+    ~~~~~~~~~^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\interfaces.py
+", line 595, in init
+    self.do_init()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\relationships
+.py", line 1660, in do_init
+    self._generate_backref(
+)
+    ~~~~~~~~~~~~~~~~~~~~~~^
+^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\relationships
+.py", line 2144, in _genera
+te_backref
+    self._add_reverse_prope
+rty(self.back_populates)
+    ~~~~~~~~~~~~~~~~~~~~~~~
+~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\relationships
+.py", line 1591, in _add_re
+verse_property
+    other = self.mapper.get
+_property(key, _configure_m
+appers=False)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2533, in get_property
+    raise sa_exc.InvalidReq
+uestError(
+    ...<3 lines>...
+    ) from err
+sqlalchemy.exc.InvalidReque
+stError: Mapper 'Mapper[Aud
+itLog(audit_logs)]' has no 
+property 'admin_user'.  If 
+this property was indicated
+ from other mappers or conf
+igure events, ensure regist
+ry.configure() has been cal
+led.
+INFO:     127.0.0.1:60938 - "POST /admin/login HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI
+ application
+Traceback (most recent call
+ last):
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2531, in get_property
+    return self._props[key]
+           ~~~~~~~~~~~^^^^^
+KeyError: 'admin_user'
+
+The above exception was the
+ direct cause of the follow
+ing exception:
+
+Traceback (most recent call
+ last):
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\u
+vicorn\protocols\http\h11_i
+mpl.py", line 410, in run_a
+sgi
+    result = await app(  # 
+type: ignore[func-returns-v
+alue]
+             ^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^
+        self.scope, self.re
+ceive, self.send
+        ^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\u
+vicorn\middleware\proxy_hea
+ders.py", line 60, in __cal
+l__
+    return await self.app(s
+cope, receive, send)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\applications.py", li
+ne 1135, in __call__
+    await super().__call__(
+scope, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\applications.py", 
+line 107, in __call__
+    await self.middleware_s
+tack(scope, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\errors.
+py", line 186, in __call__
+    raise exc
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\errors.
+py", line 164, in __call__
+    await self.app(scope, r
+eceive, _send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\session
+s.py", line 85, in __call__
+    await self.app(scope, r
+eceive, send_wrapper)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\cors.py
+", line 85, in __call__
+    await self.app(scope, r
+eceive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\middleware\excepti
+ons.py", line 63, in __call
+__
+    await wrap_app_handling
+_exceptions(self.app, conn)
+(scope, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\_exception_handler
+.py", line 53, in wrapped_a
+pp
+    raise exc
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\_exception_handler
+.py", line 42, in wrapped_a
+pp
+    await app(scope, receiv
+e, sender)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\middleware\asyncexit
+stack.py", line 18, in __ca
+ll__
+    await self.app(scope, r
+eceive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\routing.py", line 
+716, in __call__
+    await self.middleware_s
+tack(scope, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\routing.py", line 
+736, in app
+    await route.handle(scop
+e, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\routing.py", line 
+290, in handle
+    await self.app(scope, r
+eceive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\routing.py", line 11
+5, in app
+    await wrap_app_handling
+_exceptions(app, request)(s
+cope, receive, send)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\_exception_handler
+.py", line 53, in wrapped_a
+pp
+    raise exc
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\_exception_handler
+.py", line 42, in wrapped_a
+pp
+    await app(scope, receiv
+e, sender)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\routing.py", line 10
+1, in app
+    response = await f(requ
+est)
+               ^^^^^^^^^^^^
+^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\routing.py", line 35
+5, in app
+    raw_response = await ru
+n_endpoint_function(
+                   ^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\f
+astapi\routing.py", line 24
+5, in run_endpoint_function
+    return await run_in_thr
+eadpool(dependant.call, **v
+alues)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+tarlette\concurrency.py", l
+ine 32, in run_in_threadpoo
+l
+    return await anyio.to_t
+hread.run_sync(func)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\a
+nyio\to_thread.py", line 61
+, in run_sync
+    return await get_async_
+backend().run_sync_in_worke
+r_thread(
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^
+        func, args, abandon
+_on_cancel=abandon_on_cance
+l, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\a
+nyio\_backends\_asyncio.py"
+, line 2525, in run_sync_in
+_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\a
+nyio\_backends\_asyncio.py"
+, line 986, in run
+    result = context.run(fu
+nc, *args)
+  File "C:\Users\User\Docum
+ents\solutions_marketplace_
+project\solutions_market_pl
+ace_project\backend\routers
+\admin.py", line 63, in log
+in_post
+    user = db.query(User).f
+ilter(User.email == email).
+first()
+           ~~~~~~~~^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\session.py", 
+line 2941, in query
+    return self._query_cls(
+entities, self, **kwargs)
+           ~~~~~~~~~~~~~~~^
+^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\query.py", li
+ne 276, in __init__
+    self._set_entities(enti
+ties)
+    ~~~~~~~~~~~~~~~~~~^^^^^
+^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\query.py", li
+ne 289, in _set_entities
+    coercions.expect(
+    ~~~~~~~~~~~~~~~~^
+        roles.ColumnsClause
+Role,
+        ^^^^^^^^^^^^^^^^^^^
+^^^^^
+    ...<2 lines>...
+        post_inspect=True,
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\sql\coercions.py"
+, line 389, in expect
+    insp._post_inspect
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\util\langhelpers.
+py", line 1338, in __get__
+    obj.__dict__[self.__nam
+e__] = result = self.fget(o
+bj)
+                           
+                ~~~~~~~~~^^
+^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2733, in _post_inspect
+    self._check_configure()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2410, in _check_configu
+re
+    _configure_registries({
+self.registry}, cascade=Tru
+e)
+    ~~~~~~~~~~~~~~~~~~~~~^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 4227, in _configure_reg
+istries
+    _do_configure_registrie
+s(registries, cascade)
+    ~~~~~~~~~~~~~~~~~~~~~~~
+~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 4268, in _do_configure_
+registries
+    mapper._post_configure_
+properties()
+    ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2427, in _post_configur
+e_properties
+    prop.init()
+    ~~~~~~~~~^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\interfaces.py
+", line 595, in init
+    self.do_init()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\relationships
+.py", line 1660, in do_init
+    self._generate_backref(
+)
+    ~~~~~~~~~~~~~~~~~~~~~~^
+^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\relationships
+.py", line 2144, in _genera
+te_backref
+    self._add_reverse_prope
+rty(self.back_populates)
+    ~~~~~~~~~~~~~~~~~~~~~~~
+~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\relationships
+.py", line 1591, in _add_re
+verse_property
+    other = self.mapper.get
+_property(key, _configure_m
+appers=False)
+  File "C:\Users\User\AppDa
+ta\Local\Programs\Python\Py
+thon313\Lib\site-packages\s
+qlalchemy\orm\mapper.py", l
+ine 2533, in get_property
+    raise sa_exc.InvalidReq
+uestError(
+    ...<3 lines>...
+    ) from err
+sqlalchemy.exc.InvalidReque
+stError: Mapper 'Mapper[Aud
+itLog(audit_logs)]' has no 
+property 'admin_user'.  If 
+this property was indicated
+ from other mappers or conf
+igure events, ensure regist
+ry.configure() has been cal
+led.
