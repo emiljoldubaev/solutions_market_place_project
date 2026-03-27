@@ -4,7 +4,6 @@ import '../../providers/conversation_provider.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/loading_skeleton.dart';
 import '../../config/theme.dart';
-import 'conversation_detail_screen.dart';
 
 class ConversationsScreen extends StatefulWidget {
   const ConversationsScreen({Key? key}) : super(key: key);
