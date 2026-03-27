@@ -255,7 +255,15 @@ class _MyListingsScreenState extends State<MyListingsScreen>
                                     Icons.edit_outlined,
                                     AppTheme.primary,
                                     () {
-                                      // Navigate to edit listing
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/edit-listing',
+                                        arguments: listing,
+                                      ).then((updated) {
+                                        if (updated == true) {
+                                          context.read<ListingProvider>().fetchMyListings();
+                                        }
+                                      });
                                     },
                                   ),
                                   const SizedBox(height: 4),

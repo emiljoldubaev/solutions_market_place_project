@@ -192,6 +192,80 @@ class ListingProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updateListing(int id, Map<String, dynamic> data) async {
+    _isCreating = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+
+      final response = await http.put(
+        Uri.parse('${ApiConfig.baseUrl}/listings/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(data),
+      );
+
+      if (response.statusCode == 401) {
+        throw Exception('Session expired, please login again');
+      }
+      if (response.statusCode == 422) {
+        final detail = json.decode(response.body)['detail'];
+        throw Exception(detail?.toString() ?? 'Validation error');
+      }
+      if (response.statusCode != 200) {
+        throw Exception(
+          json.decode(response.body)['detail'] ?? 'Failed to update listing',
+        );
+      }
+
+      final updatedListing = json.decode(response.body);
+
+      // Local UI replacement cache hooks
+      final myIndex = _myListings.indexWhere((l) => l['id'] == id);
+      if (myIndex != -1) _myListings[myIndex] = updatedListing;
+
+      final globalIndex = _listings.indexWhere((l) => l['id'] == id);
+      if (globalIndex != -1) _listings[globalIndex] = updatedListing;
+      
+    } catch (e) {
+      _error = e.toString().replaceFirst('Exception: ', '');
+      rethrow;
+    } finally {
+      _isCreating = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> uploadImages(int listingId, List<XFile> images) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    if (token == null) return;
+
+    for (final image in images) {
+      try {
+        final bytes = await image.readAsBytes();
+        final request = http.MultipartRequest(
+          'POST',
+          Uri.parse('${ApiConfig.baseUrl}/listings/$listingId/images'),
+        );
+        request.headers['Authorization'] = 'Bearer $token';
+        request.files.add(http.MultipartFile.fromBytes(
+          'file',
+          bytes,
+          filename: image.name,
+        ));
+        await request.send();
+      } catch (_) {
+        // Skip failed image, continue with next
+      }
+    }
+  }
+
   Future<void> deleteListing(int id) async {
     try {
       final prefs = await SharedPreferences.getInstance();

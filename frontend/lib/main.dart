@@ -11,6 +11,7 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/listing/create_listing_screen.dart';
+import 'screens/listing/edit_listing_screen.dart';
 import 'screens/listing/listing_detail_screen.dart';
 import 'screens/listing/my_listings_screen.dart';
 import 'screens/listing/favorites_screen.dart';
@@ -84,6 +85,7 @@ class MarketplaceApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
         '/create-listing': (context) => const CreateListingScreen(),
+        '/edit-listing': (context) => const EditListingScreen(),
         '/listing-detail': (context) => const ListingDetailScreen(),
         '/my-listings': (context) => const MyListingsScreen(),
         '/conversation-detail': (context) => const ConversationDetailScreen(),
