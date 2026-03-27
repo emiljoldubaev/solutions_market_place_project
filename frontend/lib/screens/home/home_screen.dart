@@ -52,14 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Array of base screens for Navigation
-    final List<Widget> _screens = [
-      _buildHomeTab(context),
-      const SearchScreen(),
-      const CreateListingScreen(),
-      const ConversationsScreen(),
-      const ProfileScreen(),
-    ];
 
     return Scaffold(
       bottomNavigationBar: NavigationBar(
@@ -114,7 +106,16 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: SafeArea(
-        child: _screens[_currentIndex],
+        child: IndexedStack(
+          index: _currentIndex,
+          children: [
+            _buildHomeTab(context),
+            const SearchScreen(),
+            const CreateListingScreen(),
+            const ConversationsScreen(),
+            const ProfileScreen(),
+          ],
+        ),
       ),
     );
   }

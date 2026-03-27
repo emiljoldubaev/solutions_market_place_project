@@ -1,1 +1,11 @@
 backend/server.log
+.env
+build/
+.dart_tool/
+__pycache__/
+*.pyc
+.flutter-plugins
+.flutter-plugins-dependencies
+.idea/
+.vscode/
+*.iml
