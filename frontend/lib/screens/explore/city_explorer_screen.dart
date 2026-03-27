@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../config/city_hubs.dart';
@@ -46,11 +47,13 @@ class _CityExplorerScreenState extends State<CityExplorerScreen>
   }
 
   void _selectCity(CityHub city) {
+    HapticFeedback.lightImpact();
     setState(() => _selectedCity = city);
     _cardController.forward(from: 0);
   }
 
   void _navigateToSearch(CityHub city) {
+    HapticFeedback.mediumImpact();
     final searchProvider = context.read<SearchProvider>();
     searchProvider.performSearch({
       'city': city.name,

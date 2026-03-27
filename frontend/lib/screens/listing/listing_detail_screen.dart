@@ -60,7 +60,17 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
         await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
       }
     } catch (_) {
-      await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+      try {
+        await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not open maps for $city'),
+            backgroundColor: AppTheme.error,
+          ),
+        );
+      }
     }
   }
 
