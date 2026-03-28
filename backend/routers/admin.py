@@ -19,8 +19,11 @@ from models.category import Category
 from models.audit_log import AuditLog
 from services.auth_service import verify_password
 from services.notification_service import notification_service
+from security.admin_auth import require_SSR_admin
 
 router = APIRouter(prefix="/admin", tags=["AdminUI"])
+public_router = APIRouter()
+protected_router = APIRouter(dependencies=[Depends(require_SSR_admin)])
 templates = Jinja2Templates(directory="templates")
 
 def flash(request: Request, message: str, category: str = "success"):
@@ -41,24 +44,19 @@ def get_pagination(total, page, page_size):
         "pages": math.ceil(total / page_size) if total > 0 else 1
     }
 
-def check_admin(request: Request, db: Session):
-    admin_id = request.session.get("admin_id")
-    if not admin_id: return None
-    return db.query(User).filter(User.id == admin_id, User.role == "admin").first()
-
 def log_audit(db: Session, admin_id: int, action: str, entity_type: str, entity_id: int, details: str = None):
     log = AuditLog(admin_id=admin_id, action=action, entity_type=entity_type, entity_id=entity_id, details=details)
     db.add(log)
     db.commit()
 
 # --- Auth ---
-@router.get("/login", response_class=HTMLResponse)
+@public_router.get("/login", response_class=HTMLResponse)
 def login_get(request: Request):
     if request.session.get("admin_id"):
         return RedirectResponse("/admin/dashboard", status_code=303)
     return templates.TemplateResponse("admin/login.html", {"request": request, "messages": get_flashed_messages(request)})
 
-@router.post("/login")
+@public_router.post("/login")
 def login_post(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
     if not user or not verify_password(password, user.password_hash) or user.role != "admin":
@@ -68,17 +66,16 @@ def login_post(request: Request, email: str = Form(...), password: str = Form(..
     flash(request, f"Welcome back, {user.full_name}!", "success")
     return RedirectResponse("/admin/dashboard", status_code=303)
 
-@router.get("/logout")
+@public_router.get("/logout")
 def logout(request: Request):
     request.session.clear()
     flash(request, "Logged out successfully.", "info")
     return RedirectResponse("/admin/login", status_code=303)
 
 # --- Dashboard ---
-@router.get("/dashboard", response_class=HTMLResponse)
+@protected_router.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
 
     stats = {
         "total_users": db.query(User).count(),
@@ -99,10 +96,9 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     })
 
 # --- Users ---
-@router.get("/users", response_class=HTMLResponse)
+@protected_router.get("/users", response_class=HTMLResponse)
 def list_users(request: Request, search: str = "", page: int = 1, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     page_size = 20
     query = db.query(User)
     if search:
@@ -115,10 +111,9 @@ def list_users(request: Request, search: str = "", page: int = 1, db: Session = 
         "messages": get_flashed_messages(request), "active_page": "users"
     })
 
-@router.get("/users/{id}", response_class=HTMLResponse)
+@protected_router.get("/users/{id}", response_class=HTMLResponse)
 def user_detail(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     user = db.query(User).filter(User.id == id).first()
     listings = db.query(Listing).filter(Listing.owner_id == id).all()
     reports = db.query(Report).filter(Report.reporter_user_id == id).all()
@@ -127,10 +122,9 @@ def user_detail(request: Request, id: int, db: Session = Depends(get_db)):
         "messages": get_flashed_messages(request), "active_page": "users"
     })
 
-@router.post("/users/{id}/suspend")
+@protected_router.post("/users/{id}/suspend")
 def suspend_user(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     user = db.query(User).filter(User.id == id).first()
     if user:
         user.account_status = "blocked"
@@ -139,10 +133,9 @@ def suspend_user(request: Request, id: int, db: Session = Depends(get_db)):
         flash(request, f"User {user.email} suspended.", "warning")
     return RedirectResponse(f"/admin/users/{id}", status_code=303)
 
-@router.post("/users/{id}/unsuspend")
+@protected_router.post("/users/{id}/unsuspend")
 def unsuspend_user(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     user = db.query(User).filter(User.id == id).first()
     if user:
         user.account_status = "active"
@@ -152,10 +145,9 @@ def unsuspend_user(request: Request, id: int, db: Session = Depends(get_db)):
     return RedirectResponse(f"/admin/users/{id}", status_code=303)
 
 # --- Listings ---
-@router.get("/listings", response_class=HTMLResponse)
+@protected_router.get("/listings", response_class=HTMLResponse)
 def list_listings(request: Request, status: str = "", category_id: int = 0, page: int = 1, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     query = db.query(Listing)
     if status: query = query.filter(Listing.status == status)
     if category_id: query = query.filter(Listing.category_id == category_id)
@@ -168,19 +160,17 @@ def list_listings(request: Request, status: str = "", category_id: int = 0, page
         "categories": categories, "messages": get_flashed_messages(request), "active_page": "listings"
     })
 
-@router.get("/listings/{id}", response_class=HTMLResponse)
+@protected_router.get("/listings/{id}", response_class=HTMLResponse)
 def listing_detail(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     listing = db.query(Listing).filter(Listing.id == id).first()
     return templates.TemplateResponse("admin/listings/detail.html", {
         "request": request, "listing": listing, "messages": get_flashed_messages(request), "active_page": "listings"
     })
 
-@router.post("/listings/{id}/approve")
+@protected_router.post("/listings/{id}/approve")
 def approve_listing(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     listing = db.query(Listing).filter(Listing.id == id).first()
     if listing:
         listing.status = "approved"
@@ -190,10 +180,9 @@ def approve_listing(request: Request, id: int, db: Session = Depends(get_db)):
         flash(request, "Listing approved.", "success")
     return RedirectResponse(f"/admin/listings/{id}", status_code=303)
 
-@router.post("/listings/{id}/reject")
+@protected_router.post("/listings/{id}/reject")
 def reject_listing(request: Request, id: int, note: str = Form(...), db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     listing = db.query(Listing).filter(Listing.id == id).first()
     if listing:
         listing.status = "rejected"
@@ -203,10 +192,9 @@ def reject_listing(request: Request, id: int, note: str = Form(...), db: Session
         flash(request, "Listing rejected.", "danger")
     return RedirectResponse(f"/admin/listings/{id}", status_code=303)
 
-@router.post("/listings/{id}/archive")
+@protected_router.post("/listings/{id}/archive")
 def archive_listing(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     listing = db.query(Listing).filter(Listing.id == id).first()
     if listing:
         listing.status = "archived"
@@ -215,10 +203,9 @@ def archive_listing(request: Request, id: int, db: Session = Depends(get_db)):
         flash(request, "Listing archived.", "warning")
     return RedirectResponse(f"/admin/listings/{id}", status_code=303)
 
-@router.post("/listings/{id}/feature")
+@protected_router.post("/listings/{id}/feature")
 def toggle_feature_listing(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     listing = db.query(Listing).filter(Listing.id == id).first()
     if listing:
         listing.is_featured = not listing.is_featured
@@ -228,10 +215,9 @@ def toggle_feature_listing(request: Request, id: int, db: Session = Depends(get_
     return RedirectResponse(f"/admin/listings/{id}", status_code=303)
 
 # --- Reports ---
-@router.get("/reports", response_class=HTMLResponse)
+@protected_router.get("/reports", response_class=HTMLResponse)
 def list_reports(request: Request, status: str = "pending", page: int = 1, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     query = db.query(Report)
     if status: query = query.filter(Report.status == status)
     total = query.count()
@@ -242,10 +228,9 @@ def list_reports(request: Request, status: str = "pending", page: int = 1, db: S
         "messages": get_flashed_messages(request), "active_page": "reports"
     })
 
-@router.post("/reports/{id}/resolve")
+@protected_router.post("/reports/{id}/resolve")
 def resolve_report(request: Request, id: int, resolution_note: str = Form(...), action_opt: str = Form("resolve"), db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     rep = db.query(Report).filter(Report.id == id).first()
     if rep:
         rep.status = "resolved" if action_opt == "resolve" else "dismissed"
@@ -260,19 +245,17 @@ def resolve_report(request: Request, id: int, resolution_note: str = Form(...), 
     return RedirectResponse("/admin/reports", status_code=303)
 
 # --- Categories ---
-@router.get("/categories", response_class=HTMLResponse)
+@protected_router.get("/categories", response_class=HTMLResponse)
 def list_categories(request: Request, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     categories = db.query(Category).all()
     return templates.TemplateResponse("admin/categories/list.html", {
         "request": request, "categories": categories, "messages": get_flashed_messages(request), "active_page": "categories"
     })
 
-@router.post("/categories")
+@protected_router.post("/categories")
 def create_category(request: Request, name: str = Form(...), db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     slug = name.lower().replace(" ", "-")
     cat = Category(name=name, slug=slug)
     db.add(cat)
@@ -281,10 +264,9 @@ def create_category(request: Request, name: str = Form(...), db: Session = Depen
     flash(request, "Category created.", "success")
     return RedirectResponse("/admin/categories", status_code=303)
 
-@router.post("/categories/{id}/toggle")
+@protected_router.post("/categories/{id}/toggle")
 def toggle_category(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     cat = db.query(Category).filter(Category.id == id).first()
     if cat:
         cat.is_active = not cat.is_active
@@ -294,10 +276,9 @@ def toggle_category(request: Request, id: int, db: Session = Depends(get_db)):
     return RedirectResponse("/admin/categories", status_code=303)
 
 # --- Payments ---
-@router.get("/payments", response_class=HTMLResponse)
+@protected_router.get("/payments", response_class=HTMLResponse)
 def list_payments(request: Request, page: int = 1, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     query = db.query(Payment).order_by(desc(Payment.created_at))
     total = query.count()
     payments = query.offset((page-1)*20).limit(20).all()
@@ -308,10 +289,9 @@ def list_payments(request: Request, page: int = 1, db: Session = Depends(get_db)
     })
 
 # --- Promotions ---
-@router.get("/promotions", response_class=HTMLResponse)
+@protected_router.get("/promotions", response_class=HTMLResponse)
 def list_promotions(request: Request, status: str = "active", page: int = 1, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     query = db.query(Promotion)
     if status: query = query.filter(Promotion.status == status)
     total = query.count()
@@ -322,10 +302,9 @@ def list_promotions(request: Request, status: str = "active", page: int = 1, db:
         "messages": get_flashed_messages(request), "active_page": "promotions"
     })
 
-@router.post("/promotions/{id}/deactivate")
+@protected_router.post("/promotions/{id}/deactivate")
 def deactivate_promotion(request: Request, id: int, db: Session = Depends(get_db)):
-    admin = check_admin(request, db)
-    if not admin: return RedirectResponse("/admin/login", status_code=303)
+    admin = request.state.admin
     promo = db.query(Promotion).filter(Promotion.id == id).first()
     if promo:
         promo.status = "expired"
@@ -333,3 +312,6 @@ def deactivate_promotion(request: Request, id: int, db: Session = Depends(get_db
         log_audit(db, admin.id, "deactivate_promo", "promotion", id)
         flash(request, "Promotion deactivated.", "warning")
     return RedirectResponse("/admin/promotions", status_code=303)
+
+router.include_router(public_router)
+router.include_router(protected_router)

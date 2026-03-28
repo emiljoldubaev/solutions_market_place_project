@@ -9,3 +9,8 @@ __pycache__/
 .idea/
 .vscode/
 *.iml
+
+# Security exclusions
+.env
+serviceAccountKey.json
+migrate_temp.py
